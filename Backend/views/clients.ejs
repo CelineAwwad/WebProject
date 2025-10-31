@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Clients · Music Marketing Platform</title>
+  <link rel="stylesheet" href="/styles/style.css" />
+  <script src="/js/script.js"></script>
+
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar" aria-label="Main">
+      <div class="sidebar__top">
+        <a class="logo" href="/app" title="Dashboard" aria-label="Dashboard">
+          <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M12 3v10.55A4 4 0 1 1 10 9V5h4V3h-2z"/></svg>
+        </a>
+        <a class="nav-icon is-active" href="/app/clients" title="Clients">
+          <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm-9 9a9 9 0 0 1 18 0Z"/></svg>
+        </a>
+        <a class="nav-icon" href="/app/campaigns" title="Campaigns">
+          <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M3 4h18v2H3zm0 7h18v2H3zm0 7h18v2H3z"/></svg>
+        </a>
+        <a class="nav-icon" href="/app/niches" title="Niches">
+          <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M12 2 2 7l10 5 10-5-10-5Zm0 7L2 14l10 5 10-5-10-5Z"/></svg>
+        </a>
+      </div>
+
+      <div class="sidebar__bottom">
+        <a class="nav-icon" href="/app/profile" title="Profile">
+          <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm7 9H5a1 1 0 0 1-1-1 8 8 0 0 1 16 0 1 1 0 0 1-1 1Z"/></svg>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content">
+      <header class="page-head">
+        <h1 class="page-title">Clients</h1>
+        <div class="actions">
+          <button class="btn btn-primary btn--lg" id="btn-add-client">Add Client</button>
+        </div>
+      </header>
+
+      <!-- 🧾 Add Client Form (hidden by default) -->
+<form id="add-client-form" action="/app/clients" method="POST" style="display: none; margin-bottom: 20px;">
+  <input type="text" name="client_name" placeholder="Client Name" required>
+  <input type="text" name="contact_info" placeholder="Contact Info (email or phone)">
+  <input type="number" name="manager_id" placeholder="Manager ID" required>
+  <button type="submit" class="btn btn-primary">Save Client</button>
+</form>
+
+      <section class="card">
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>@Username</th>
+                <th>Niche</th>
+                <th>Status</th>
+                <th>Base Price</th>
+                <th>#Active Campaigns</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% clients.forEach(client => { %>
+                <tr class="row">
+                  <td class="cell name">
+                    <img class="avatar" src="<%= client.avatar %>" alt="">
+                    <div class="namebox">
+                      <span class="namebox__title"><%= client.name %></span>
+                      <span class="namebox__sub">Creator</span>
+                    </div>
+                  </td>
+                  <td class="cell handle">@<%= client.username %></td>
+                  <td class="cell niche"><%= client.niche %></td>
+                  <td class="cell">
+                    <% if (client.status === 'Active') { %>
+                      <span class="pill pill--active">Active</span>
+                    <% } else if (client.status === 'Pending') { %>
+                      <span class="pill pill--pending">Pending</span>
+                    <% } else { %>
+                      <span class="pill pill--inactive">Inactive</span>
+                    <% } %>
+                  </td>
+                  <td class="cell price">$<%= client.price %></td>
+                  <td class="cell count"><%= client.activeCampaigns %></td>
+                  <td class="cell col-actions">
+                    <button class="link" data-action="view">View</button>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</body>
+</html>
