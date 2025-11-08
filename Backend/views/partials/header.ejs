@@ -1,0 +1,28 @@
+<!-- partials/sidebar.ejs -->
+<aside class="sidebar" aria-label="Main">
+  <div class="sidebar__top">
+    <a class="nav-icon <%= currentPage === 'dashboard' ? 'is-active' : '' %>" href="/app/dashboard" data-tooltip="Dashboard">
+      <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M3 3h8v8H3zm10 0h8v5h-8zm0 7h8v11h-8zm-10 3h8v8H3z"/></svg>
+      <span class="tooltip">Dashboard</span>
+    </a>
+    <a class="nav-icon <%= currentPage === 'clients' ? 'is-active' : '' %>" href="/app/clients" data-tooltip="Clients">
+      <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm-9 9a9 9 0 0 1 18 0Z"/></svg>
+      <span class="tooltip">Clients</span>
+    </a>
+    <a class="nav-icon <%= currentPage === 'campaigns' ? 'is-active' : '' %>" href="/app/campaigns" data-tooltip="Campaigns">
+      <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M3 4h18v2H3zm0 7h18v2H3zm0 7h18v2H3z"/></svg>
+      <span class="tooltip">Campaigns</span>
+    </a>
+    <a class="nav-icon <%= currentPage === 'niches' ? 'is-active' : '' %>" href="/app/niches" data-tooltip="Niches">
+      <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M12 2 2 7l10 5 10-5-10-5Zm0 7L2 14l10 5 10-5-10-5Z"/></svg>
+      <span class="tooltip">Niches</span>
+    </a>
+  </div>
+
+  <div class="sidebar__bottom">
+    <a class="nav-icon <%= currentPage === 'profile' ? 'is-active' : '' %>" href="/app/profile" data-tooltip="Profile">
+      <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm7 9H5a1 1 0 0 1-1-1 8 8 0 0 1 16 0 1 1 0 0 1-1 1Z"/></svg>
+      <span class="tooltip">Profile</span>
+    </a>
+  </div>
+</aside>

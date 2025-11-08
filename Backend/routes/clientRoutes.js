@@ -1,9 +1,27 @@
 import express from "express";
-import { getAllClients, getClientById,createClient } from "../controllers/clientController.js";
+import {
+  getAllClients,
+  getClientDetails,
+  createClient,
+  updateClient,
+  deleteClient,
+} from "../controllers/clientController.js";
+
 const router = express.Router();
 
+// Get all clients (main page)
 router.get("/clients", getAllClients);
-router.get("/clients/:id", getClientById);
-router.post("/clients",createClient);
+
+// Get client details (for view modal)
+router.get("/clients/:id/details", getClientDetails);
+
+// Create new client
+router.post("/clients", createClient);
+
+// Update client
+router.put("/clients/:id", updateClient);
+
+// Delete client
+router.delete("/clients/:id", deleteClient);
 
 export default router;

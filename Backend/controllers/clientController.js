@@ -1,50 +1,151 @@
 import { pool } from "../config/db.js";
+//
+import { ClientModel } from "../models/ClientModel.js";
 
+//import { ClientModel } from "../models/ClientModel.js";
+
+// ========================================
+// 📋 GET ALL CLIENTS (for main page)
+// ========================================
 export const getAllClients = async (req, res) => {
   try {
-    const [rows] = await pool.query(
-      "SELECT client_id, client_name AS name, contact_info FROM clients ORDER BY client_id DESC"
-    );
-    res.render("clients", { clients: rows });
+    const clients = await ClientModel.findAll();
+    
+    res.render("clients", { 
+      clients,
+      currentPage: 'clients',
+      pageTitle: 'Clients · Music Marketing Platform',
+      layout: 'layout'
+    });
   } catch (err) {
-    console.error(err);
-    res.status(500).send("DB error");
+    console.error("Error fetching clients:", err);
+    res.status(500).send("Database error");
   }
 };
 
-export const getClientById = async (req, res) => {
-  const id = req.params.id;
+// ========================================
+// 👁️ GET CLIENT DETAILS (for view modal)
+// ========================================
+export const getClientDetails = async (req, res) => {
+  const clientId = req.params.id;
+  
   try {
-    const [rows] = await pool.query("SELECT * FROM clients WHERE client_id = ?", [id]);
-    if (!rows.length) return res.status(404).send("Not found");
-    res.render("client-detail", { client: rows[0] });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("DB error");
-  }
-};
-
-export const createClient = async (req,res) => {
-  try {
-      
-     // Step 1: Get the form data the user submitted
-    const { client_name, contact_info, manager_id } = req.body;
-
-    // Step 2: Validate it (make sure it’s not empty)
-    if (!client_name || !manager_id) {
-      return res.status(400).send("Client name and manager ID are required");
+    const client = await ClientModel.findById(clientId);
+    
+    if (!client) {
+      return res.status(404).json({ error: "Client not found" });
     }
 
-    // Step 3: Insert into the database
-    await pool.query(
-      "INSERT INTO clients (client_name, contact_info, manager_id) VALUES (?, ?, ?)",
-      [client_name, contact_info || null, manager_id]
+    const clientNiches = await ClientModel.getClientNiches(clientId);
+    const clientCampaigns = await ClientModel.getClientCampaigns(clientId);
+
+    const [allNiches] = await pool.query("SELECT * FROM niches ORDER BY niche_name");
+    const [allCampaigns] = await pool.query(
+      "SELECT * FROM campaigns WHERE status = 'active' ORDER BY title"
     );
 
-    // Step 4: Redirect back to the clients list
-    res.redirect("/app/clients");
+    res.json({
+      client,
+      clientNiches,
+      clientCampaigns,
+      allNiches,
+      allCampaigns,
+    });
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Database error");
+    console.error("Error fetching client details:", err);
+    res.status(500).json({ error: "Database error" });
+  }
+};
+
+// ========================================
+// ➕ CREATE CLIENT
+// ========================================
+export const createClient = async (req, res) => {
+  const connection = await pool.getConnection();
+  
+  try {
+    const { user_name, tiktok_link, base_price, username, manager_id } = req.body;
+
+    if (!user_name || !tiktok_link || !username) {
+      return res.status(400).json({ 
+        error: "Client name, TikTok link, and username are required" 
+      });
+    }
+
+    await connection.beginTransaction();
+
+    const result = await ClientModel.create(req.body, connection);
+
+    await connection.commit();
+
+    res.status(201).json({ 
+      success: true, 
+      ...result
+    });
+  } catch (err) {
+    await connection.rollback();
+    console.error("Error creating client:", err);
+    res.status(500).json({ error: "Database error: " + err.message });
+  } finally {
+    connection.release();
+  }
+};
+
+// ========================================
+// 📝 UPDATE CLIENT
+// ========================================
+export const updateClient = async (req, res) => {
+  const clientId = req.params.id;
+  const connection = await pool.getConnection();
+  
+  try {
+    const { niches, campaigns, ...clientData } = req.body;
+
+    await connection.beginTransaction();
+
+    // Update client basic info
+    await ClientModel.update(clientId, clientData, connection);
+
+    // Update niches if provided
+    if (niches !== undefined) {
+      await ClientModel.updateNiches(clientId, niches, connection);
+    }
+
+    // Update campaigns if provided
+    if (campaigns !== undefined) {
+      await ClientModel.updateCampaigns(clientId, campaigns, connection);
+    }
+
+    await connection.commit();
+    res.json({ success: true });
+  } catch (err) {
+    await connection.rollback();
+    console.error("Error updating client:", err);
+    res.status(500).json({ error: "Database error: " + err.message });
+  } finally {
+    connection.release();
+  }
+};
+
+// ========================================
+// 🗑️ DELETE CLIENT
+// ========================================
+export const deleteClient = async (req, res) => {
+  const clientId = req.params.id;
+  const connection = await pool.getConnection();
+  
+  try {
+    await connection.beginTransaction();
+
+    await ClientModel.delete(clientId, connection);
+
+    await connection.commit();
+    res.json({ success: true });
+  } catch (err) {
+    await connection.rollback();
+    console.error("Error deleting client:", err);
+    res.status(500).json({ error: "Database error: " + err.message });
+  } finally {
+    connection.release();
   }
 };

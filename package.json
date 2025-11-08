@@ -1,15 +1,23 @@
 {
-  "name": "webproject",
+  "name": "music-marketing-platform",
   "version": "1.0.0",
-  "description": "",
+  "description": "A Node.js + Express web app for managing clients, campaigns, and niches for a music marketing platform.",
   "type": "module",
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon app.js",
+    "test": "echo \"No test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "music",
+    "marketing",
+    "platform",
+    "express",
+    "ejs",
+    "mysql"
+  ],
+  "author": "Celine Awwad",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^17.2.3",

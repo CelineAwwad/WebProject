@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title><%= pageTitle || 'Music Marketing Platform' %></title>
+  <link rel="stylesheet" href="/styles/style.css" />
+</head>
+<body class="page-<%= currentPage %>">
+  <div class="app">
+    <!-- SIDEBAR -->
+    <%- include('partials/sidebar') %>
+
+    <main class="content">
+      <!-- HEADER -->
+      <%- include('partials/header') %>
+
+      <!-- PAGE CONTENT -->
+      <%- body %>
+    </main>
+  </div>
+
+  <!-- ========================================
+       SCRIPTS: Load in correct order
+       ======================================== -->
+  
+  <!-- 1. Load common utilities FIRST -->
+  <script src="/js/script.js"></script>
+  
+  <!-- 2. Load page-specific scripts SECOND -->
+  <% if (currentPage === 'clients') { %>
+    <script src="/js/clients.js"></script>
+  <% } else if (currentPage === 'campaigns') { %>
+    <script src="/js/campaigns.js"></script>
+  <% } else if (currentPage === 'niches') { %>
+    <script src="/js/niches.js"></script>
+  <% } %>
+
+  <!-- Note: Auto-initialization happens via DOMContentLoaded in each script -->
+</body>
+</html>
