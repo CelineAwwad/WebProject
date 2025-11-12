@@ -16,7 +16,7 @@ export const layoutMiddleware = (req, res, next) => {
       originalRender.call(this, view, { ...otherOptions, layout: false }, (err, html) => {
         if (err) return next(err);
 
-        // Then render the layout with the page content
+        // Then render the layout with the page content, like its wrapping the page content with it
         originalRender.call(this, layout, {
           ...otherOptions,
           body: html,

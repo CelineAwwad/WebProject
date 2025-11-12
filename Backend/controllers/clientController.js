@@ -14,7 +14,7 @@ export const getAllClients = async (req, res) => {
     res.render("clients", { 
       clients,
       currentPage: 'clients',
-      pageTitle: 'Clients · Music Marketing Platform',
+      title: 'Clients · Music Marketing Platform',
       layout: 'layout'
     });
   } catch (err) {

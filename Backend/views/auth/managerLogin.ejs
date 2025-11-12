@@ -1,0 +1,41 @@
+<%- include('../partials/header') %>
+
+<div class="login-container">
+  <h2>Manager Login</h2>
+
+  <% if (error) { %>
+    <p class="error"><%= error %></p>
+  <% } %>
+
+  <form action="/auth/manager/login" method="POST" novalidate>
+    <div>
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        value="<%= typeof email !== 'undefined' ? email : '' %>"
+        required
+        autocomplete="email"
+        autofocus
+      />
+    </div>
+
+    <div>
+      <label for="password">Password</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        required
+        autocomplete="current-password"
+      />
+    </div>
+
+    <button type="submit">Login</button>
+  </form>
+
+  <div style="margin-top:12px;">
+    <small>Are you a creator? <a href="/auth/client/login">Log in via TikTok</a></small>
+  </div>
+</div>

@@ -1,0 +1,13 @@
+<!-- Backend/views/managerDashboard.ejs -->
+<%- include('partials/header') %>
+
+<div class="dashboard-container">
+  <h1>Welcome, <%= user.name %> 👋</h1>
+  <p>Email: <%= user.email %></p>
+
+  <nav>
+    <a href="/auth/manager/logout">Logout</a>
+  </nav>
+</div>
+
+
