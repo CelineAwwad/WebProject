@@ -1,4 +1,4 @@
-<!-- Backend/views/auth/managerLogin.ejs -->
+<!-- Backend/views/auth/clientLogin.ejs -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,7 +14,7 @@
 
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -79,14 +79,14 @@
 
     input:focus {
       outline: none;
-      border-color: #f5576c;
-      box-shadow: 0 0 0 3px rgba(245, 87, 108, 0.1);
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     }
 
     button {
       width: 100%;
       padding: 14px;
-      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       border: none;
       border-radius: 10px;
@@ -99,7 +99,7 @@
 
     button:hover {
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(245, 87, 108, 0.3);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
     }
 
     button:active {
@@ -114,7 +114,7 @@
     }
 
     .footer-links a {
-      color: #f5576c;
+      color: #667eea;
       text-decoration: none;
       font-weight: 600;
     }
@@ -132,25 +132,25 @@
 </head>
 <body>
   <div class="login-container">
-    <div class="icon">🎯</div>
-    <h2>Manager Login</h2>
-    <p class="subtitle">Access your management dashboard</p>
+    <div class="icon">🎵</div>
+    <h2>Creator Login</h2>
+    <p class="subtitle">Login with your TikTok username</p>
 
     <% if (error) { %>
       <div class="error"><%= error %></div>
     <% } %>
 
-    <form action="/auth/manager/login" method="POST" novalidate>
+    <form action="/auth/client/login" method="POST" novalidate>
       <div class="form-group">
-        <label for="email">Email</label>
+        <label for="username">Username</label>
         <input
-          type="email"
-          id="email"
-          name="email"
-          value="<%= typeof email !== 'undefined' ? email : '' %>"
-          placeholder="manager@example.com"
+          type="text"
+          id="username"
+          name="username"
+          value="<%= typeof username !== 'undefined' ? username : '' %>"
+          placeholder="Your TikTok username"
           required
-          autocomplete="email"
+          autocomplete="username"
           autofocus
         />
       </div>
@@ -171,7 +171,7 @@
     </form>
 
     <div class="footer-links">
-      Are you a creator? <a href="/auth/client/login">Login here</a>
+      Are you a manager? <a href="/auth/manager/login">Login here</a>
     </div>
   </div>
 </body>

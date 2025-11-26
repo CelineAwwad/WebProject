@@ -1,4 +1,38 @@
+// Backend/models/clientModel.js - COMPLETE FILE
 import { pool } from "../config/db.js";
+import bcrypt from "bcryptjs";
+
+// ========================================
+// HELPER FUNCTIONS
+// ========================================
+
+/**
+ * Generate a random password for new clients
+ */
+function generatePassword(length = 10) {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%";
+  let password = "";
+  for (let i = 0; i < length; i++) {
+    password += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return password;
+}
+
+/**
+ * Find client by username (for login)
+ */
+export const findClientByUsername = async (username) => {
+  const [rows] = await pool.query(
+    `SELECT u.user_id, u.user_name, u.email, u.password, u.role, 
+            c.client_id, c.username, c.avatar
+     FROM users u
+     INNER JOIN clients c ON u.user_id = c.user_id
+     WHERE c.username = ? AND u.role = 'client'
+     LIMIT 1`,
+    [username]
+  );
+  return rows[0];
+};
 
 // ========================================
 // CLIENT MODEL
@@ -39,7 +73,7 @@ export const ClientModel = {
   // ========================================
   async findById(clientId) {
     const [rows] = await pool.query(
-      `SELECT c.*, u.user_name 
+      `SELECT c.*, u.username 
        FROM clients c
        INNER JOIN users u ON c.user_id = u.user_id
        WHERE c.client_id = ?`,
@@ -71,17 +105,21 @@ export const ClientModel = {
   },
 
   // ========================================
-  // CREATE CLIENT (with user)
+  // CREATE CLIENT (with user and password)
   // ========================================
   async create(clientData, connection) {
     const { user_name, tiktok_link, base_price, username, manager_id } = clientData;
+
+    // Generate a random password for the client
+    const generatedPassword = generatePassword();
+    const hashedPassword = await bcrypt.hash(generatedPassword, 10);
 
     // Create user first
     const tempEmail = `${username}@temp-client.com`;
     const [userResult] = await connection.query(
       `INSERT INTO users (user_name, email, password, role, is_verified) 
        VALUES (?, ?, ?, 'client', FALSE)`,
-      [user_name, tempEmail, 'temp_password_change_later']
+      [user_name, tempEmail, hashedPassword]
     );
 
     const userId = userResult.insertId;
@@ -96,7 +134,8 @@ export const ClientModel = {
 
     return {
       client_id: clientResult.insertId,
-      user_id: userId
+      user_id: userId,
+      generated_password: generatedPassword, // Return this to show manager
     };
   },
 

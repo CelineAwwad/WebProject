@@ -8,7 +8,7 @@ import { ClientModel } from "../models/ClientModel.js";
 // 📋 GET ALL CLIENTS (for main page)
 // ========================================
 export const getAllClients = async (req, res) => {
-  try {
+  /*try {
     const clients = await ClientModel.findAll();
     
     res.render("clients", { 
@@ -20,7 +20,16 @@ export const getAllClients = async (req, res) => {
   } catch (err) {
     console.error("Error fetching clients:", err);
     res.status(500).send("Database error");
-  }
+  }*/
+
+    try {
+  const clients = await ClientModel.findAll();
+  res.render("clients", { clients });
+} catch (err) {
+  console.error("Database error in getAllClients:", err); // log full error
+  res.status(500).send(`Database error: ${err.message}`);
+}
+
 };
 
 // ========================================
@@ -58,7 +67,8 @@ export const getClientDetails = async (req, res) => {
 };
 
 // ========================================
-// ➕ CREATE CLIENT
+// ========================================
+// ➕ CREATE CLIENT (UPDATED)
 // ========================================
 export const createClient = async (req, res) => {
   const connection = await pool.getConnection();
@@ -78,9 +88,14 @@ export const createClient = async (req, res) => {
 
     await connection.commit();
 
+    // Return the generated password to the manager
     res.status(201).json({ 
-      success: true, 
-      ...result
+      success: true,
+      message: "Client created successfully",
+      client_id: result.client_id,
+      user_id: result.user_id,
+      username: username,
+      generated_password: result.generated_password // ⚠️ Send this to manager
     });
   } catch (err) {
     await connection.rollback();

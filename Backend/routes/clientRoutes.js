@@ -1,27 +1,27 @@
+// Backend/routes/clientRoutes.js - NEW FILE
 import express from "express";
+import { verifyClient } from "../middleware/clientMiddleware.js";
 import {
-  getAllClients,
-  getClientDetails,
-  createClient,
-  updateClient,
-  deleteClient,
-} from "../controllers/clientController.js";
+  getClientProfile,
+  updateAvatar,
+  changePassword,
+  upload,
+} from "../controllers/clientProfileController.js";
 
 const router = express.Router();
 
-// Get all clients (main page)
-router.get("/clients", getAllClients);
+// Client dashboard
+router.get("/dashboard", verifyClient, (req, res) => {
+  res.render("client/dashboard", {
+    title: "Client Dashboard",
+    user: req.session.user,
+    currentPage: "dashboard",
+  });
+});
 
-// Get client details (for view modal)
-router.get("/clients/:id/details", getClientDetails);
-
-// Create new client
-router.post("/clients", createClient);
-
-// Update client
-router.put("/clients/:id", updateClient);
-
-// Delete client
-router.delete("/clients/:id", deleteClient);
+// Profile routes
+router.get("/profile", verifyClient, getClientProfile);
+router.post("/profile/avatar", verifyClient, upload.single("avatar"), updateAvatar);
+router.post("/profile/change-password", verifyClient, changePassword);
 
 export default router;
